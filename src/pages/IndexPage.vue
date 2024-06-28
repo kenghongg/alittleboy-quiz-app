@@ -1,7 +1,8 @@
 <template>
   <NavHeader />
   this is index
-  <div><PersonalInfo /></div>
+  <!-- <div><PersonalInfo /></div> -->
+  <!-- <pre>{{ user }}</pre> -->
 </template>
 
 <script setup>
@@ -18,4 +19,9 @@ const router = useRouter();
 onMounted(() => {
   console.log('Firebase API Key:', process.env.VUE_APP_FIREBASE_API_KEY); // Should log your API key
 });
+
+import { useUserStore } from 'stores/user';
+
+const userStore = useUserStore();
+const user = userStore.user;
 </script>

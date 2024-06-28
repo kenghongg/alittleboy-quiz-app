@@ -3,6 +3,10 @@ import { signOut } from 'firebase/auth';
 import { Loading, Notify } from 'quasar';
 import firebaseErrorMessages from './firebase-errormessages';
 import { useUI } from 'stores/ui';
+// import { useUserStore } from 'stores/user';
+
+// const userStore = useUserStore();
+// const user = userStore.user;
 
 const FirebaseSignOut = () => {
   return new Promise((resolve, reject) => {

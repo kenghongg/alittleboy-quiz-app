@@ -2,6 +2,7 @@ import { route } from 'quasar/wrappers';
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router';
 import routes from './routes';
 import { LocalStorage } from 'quasar';
+import { useQuasar } from 'quasar';
 
 /*
  * If not building with SSR mode, you can
@@ -32,13 +33,25 @@ export default route(function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from, next) => {
     console.log(`Navigating from ${from.fullPath} to ${to.fullPath}`);
     const userLoggedIn = LocalStorage.has('user');
+    const $q = useQuasar();
 
-    if (to.meta.auth && !userLoggedIn) {
-      if (to.path !== '/login') {
-        console.log('Redirecting to /login');
-        return next('/login');
+    if (to.meta.auth || !userLoggedIn) {
+      if (to.meta.requiresAuth) {
+        next('/login');
+        // Notify.create({
+        //   color: 'negative',
+        //   position: 'top',
+        //   message: 'Please login to continue',
+        //   icon: 'report_problem'
+        // });
+        $q.notify({
+          type: 'negative',
+          message: 'Please login to continue',
+          position: 'top',
+          icon: 'report_problem'
+        });
       } else {
-        return next();
+        next();
       }
     }
 

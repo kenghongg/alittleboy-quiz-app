@@ -5,7 +5,7 @@
 
       <q-btn flat dense to="/about">About</q-btn>
 
-      <q-btn flat dense to="/profile" v-if="userLoggedIn">Profile</q-btn>
+      <q-btn flat dense to="/settings" v-if="userLoggedIn">Settings</q-btn>
 
       <q-space />
 
@@ -21,19 +21,20 @@
 
   <div>
     <!-- <pre>{{ ui }}</pre> -->
-    <pre>userLoggedIn~~{{ userLoggedIn }}</pre>
+    <!-- <pre>userLoggedIn~~{{ userLoggedIn }}</pre> -->
   </div>
 </template>
 
 <script setup>
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import FirebaseSignout from 'src/firebase/firebase-signout';
 import { LocalStorage } from 'quasar';
 
 const router = useRouter();
 
-const userLoggedIn = computed(() => LocalStorage.has('user'));
+// const userLoggedIn = computed(() => LocalStorage.has('user'));
+const userLoggedIn = ref(false);
 
 // logout action.
 const userLogOut = () => {

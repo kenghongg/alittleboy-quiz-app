@@ -26,7 +26,8 @@ const routes = [
   {
     path: '/settings',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/SettingsPage.vue') }]
+    children: [{ path: '', component: () => import('pages/SettingsPage.vue') }],
+    meta: { requiresAuth: true }
   },
 
   // Always leave this as last one,
