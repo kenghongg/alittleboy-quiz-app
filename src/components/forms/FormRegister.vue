@@ -149,5 +149,11 @@ const formSubmit = async () => {
 </script>
 
 <style scoped lang="scss">
-@import 'styles/FormRegister';
+.form-register {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  height: calc(100dvh - 50px);
+}
 </style>

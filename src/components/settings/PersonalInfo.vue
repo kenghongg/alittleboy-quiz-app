@@ -1,20 +1,17 @@
 <template>
   <div class="profile-wrapper">
-    <q-avatar>
-      <img src="https://placehold.co/400" />
-    </q-avatar>
-
-    <!-- <div class="profile-name">
-      {{ user.displayName }}
-    </div> -->
-
+    <div class="profile-picture">
+      <q-avatar size="120px">
+        <img src="https://placehold.co/400" />
+      </q-avatar>
+    </div>
     <div>
       <FormPersonalInfo />
     </div>
   </div>
-  <div>
+  <!-- <div>
     <pre style="font-size: 10px">{{ user }}</pre>
-  </div>
+  </div> -->
 </template>
 
 <script setup>
@@ -29,9 +26,10 @@ const getUserInfo = () => {};
 </script>
 
 <style scoped lang="scss">
-// .profile-wrapper {
-//   display: flex;
-//   align-items: center;
-//   gap: 12px;
-// }
+.profile-picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 1rem;
+}
 </style>

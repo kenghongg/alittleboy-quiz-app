@@ -2,11 +2,7 @@ import { auth } from './index.js';
 import { signOut } from 'firebase/auth';
 import { Loading, Notify } from 'quasar';
 import firebaseErrorMessages from './firebase-errormessages';
-import { useUI } from 'stores/ui';
-// import { useUserStore } from 'stores/user';
-
-// const userStore = useUserStore();
-// const user = userStore.user;
+// import { useUI } from 'stores/ui';
 
 const FirebaseSignOut = () => {
   return new Promise((resolve, reject) => {
@@ -14,11 +10,10 @@ const FirebaseSignOut = () => {
 
     signOut(auth)
       .then(() => {
-        const ui = useUI();
-
+        // const ui = useUI();
         Loading.hide();
         resolve();
-        ui.offAuthUser();
+        // ui.offAuthUser();
       })
       .catch((err) => {
         Loading.hide();

@@ -5,7 +5,8 @@ export const useUI = defineStore('ui-store', {
     return {
       drawerRight: false,
       footer: true,
-      userLoggedIn: false
+      userLoggedIn: false,
+      authLoading: true
     };
   },
   actions: {
@@ -21,6 +22,12 @@ export const useUI = defineStore('ui-store', {
     },
     offAuthUser() {
       this.userLoggedIn = false;
+    },
+    onAuthLoading() {
+      this.authLoading = true;
+    },
+    offAuthLoading() {
+      this.authLoading = false;
     }
   }
 });

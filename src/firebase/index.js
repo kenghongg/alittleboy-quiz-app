@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { LocalStorage } from 'quasar';
+import { useUI } from 'stores/ui';
 
 const firebaseConfig = {
   apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
@@ -16,10 +17,36 @@ const firebaseConfig = {
 export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    LocalStorage.set('user', user);
-  } else {
-    LocalStorage.remove('user');
+// onAuthStateChanged(auth, (user) => {
+//   const ui = useUI();
+
+//   try {
+//     ui.onAuthLoading();
+//     if (user) {
+//       LocalStorage.set('user', user);
+//       ui.onAuthUser();
+//     } else {
+//       LocalStorage.remove('user');
+//       ui.offAuthUser();
+//     }
+//   } finally {
+//     ui.offAuthLoading();
+//   }
+// });
+
+onAuthStateChanged(auth, async (user) => {
+  const ui = useUI();
+  try {
+    ui.onAuthLoading();
+
+    if (user) {
+      LocalStorage.set('user', user);
+      ui.onAuthUser();
+    } else {
+      LocalStorage.remove('user');
+      ui.offAuthUser();
+    }
+  } finally {
+    ui.offAuthLoading();
   }
 });

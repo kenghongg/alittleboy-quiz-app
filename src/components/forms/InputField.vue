@@ -13,5 +13,10 @@ const props = defineProps(['label']);
 </script>
 
 <style scoped lang="scss">
-@import 'styles/InputField';
+.input-field {
+  .field-title {
+    font-size: 1rem;
+    padding-bottom: 0.5rem;
+  }
+}
 </style>

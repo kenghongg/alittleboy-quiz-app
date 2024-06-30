@@ -5,36 +5,33 @@
 
       <q-btn flat dense to="/about">About</q-btn>
 
-      <q-btn flat dense to="/settings" v-if="userLoggedIn">Settings</q-btn>
+      <q-btn flat dense to="/settings" v-if="ui.userLoggedIn">Settings</q-btn>
 
       <q-space />
 
-      <template v-if="userLoggedIn">
-        <q-btn @click="userLogOut">Logout</q-btn>
+      <template v-if="ui.authLoading">
+        <q-spinner-facebook />
       </template>
       <template v-else>
-        <q-btn to="/login">Login</q-btn>
-        <q-btn to="/register">Register</q-btn>
+        <template v-if="ui.userLoggedIn">
+          <q-btn @click="userLogOut">Logout</q-btn>
+        </template>
+        <template v-else>
+          <q-btn @click="router.push('/login')">Login</q-btn>
+          <q-btn @click="router.push('/register')">Register</q-btn>
+        </template>
       </template>
     </q-toolbar>
   </q-header>
-
-  <div>
-    <!-- <pre>{{ ui }}</pre> -->
-    <!-- <pre>userLoggedIn~~{{ userLoggedIn }}</pre> -->
-  </div>
 </template>
 
 <script setup>
-import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import FirebaseSignout from 'src/firebase/firebase-signout';
-import { LocalStorage } from 'quasar';
+import { useUI } from 'stores/ui';
 
 const router = useRouter();
-
-// const userLoggedIn = computed(() => LocalStorage.has('user'));
-const userLoggedIn = ref(false);
+const ui = useUI();
 
 // logout action.
 const userLogOut = () => {

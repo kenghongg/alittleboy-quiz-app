@@ -4,15 +4,6 @@ import routes from './routes';
 import { LocalStorage } from 'quasar';
 import { useQuasar } from 'quasar';
 
-/*
- * If not building with SSR mode, you can
- * directly export the Router instantiation;
- *
- * The function below can be async too; either use
- * async/await or return a Promise which resolves
- * with the Router instance.
- */
-
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
     ? createMemoryHistory
@@ -31,37 +22,20 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach((to, from, next) => {
-    console.log(`Navigating from ${from.fullPath} to ${to.fullPath}`);
-    const userLoggedIn = LocalStorage.has('user');
     const $q = useQuasar();
 
-    if (to.meta.auth || !userLoggedIn) {
-      if (to.meta.requiresAuth) {
-        next('/login');
-        // Notify.create({
-        //   color: 'negative',
-        //   position: 'top',
-        //   message: 'Please login to continue',
-        //   icon: 'report_problem'
-        // });
-        $q.notify({
-          type: 'negative',
-          message: 'Please login to continue',
-          position: 'top',
-          icon: 'report_problem'
-        });
-      } else {
-        next();
-      }
+    if (to.meta.auth && !LocalStorage.has('user')) {
+      $q.notify({
+        type: 'negative',
+        message: 'Please login to continue',
+        position: 'top',
+        icon: 'report_problem'
+      });
+      return next('/login');
     }
 
-    if (!to.meta.auth && userLoggedIn) {
-      if (to.path !== '/app') {
-        console.log('Redirecting to /app');
-        // return next('/app');
-      } else {
-        return next();
-      }
+    if (!to.meta.auth && LocalStorage.has('user')) {
+      return next('/app');
     }
 
     return next();

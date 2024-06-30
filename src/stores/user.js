@@ -16,17 +16,17 @@ export const useUserStore = defineStore('user', {
     clearUser() {
       this.user = null;
       LocalStorage.remove('user');
-    },
+    }
 
     // Initialize the store with the current Firebase auth state
-    initializeAuthState() {
-      auth.onAuthStateChanged((user) => {
-        if (user) {
-          this.setUser(user);
-        } else {
-          this.clearUser();
-        }
-      });
-    }
+    // initializeAuthState() {
+    //   auth.onAuthStateChanged((user) => {
+    //     if (user) {
+    //       this.setUser(user);
+    //     } else {
+    //       this.clearUser();
+    //     }
+    //   });
+    // }
   }
 });

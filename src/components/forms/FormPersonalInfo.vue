@@ -16,7 +16,7 @@
             readonly
           >
             <template v-slot:prepend>
-              <q-icon name="mail" />
+              <q-icon name="person" />
             </template>
           </q-input>
         </template>
@@ -36,7 +36,6 @@
             placeholder="Please insert email"
             ref="emailRef"
             type="email"
-            hint="Email not verify yet"
             hide-bottom-space
             autocomplete="email"
             outlined
@@ -47,8 +46,17 @@
             </template>
 
             <template v-slot:append>
-              <q-btn label="Verify" no-caps push color="primary" />
+              <q-btn
+                :label="formPersonalInfoInputs.emailVerified ? 'Verified' : 'Verify'"
+                :disable="formPersonalInfoInputs.emailVerified"
+                no-caps
+                push
+                color="primary"
+                size="md"
+              />
             </template>
+
+            <template v-slot:hint v-if="!formPersonalInfoInputs.emailVerified">Email not verify yet</template>
           </q-input>
         </template>
       </InputField>
@@ -74,19 +82,19 @@
             </template>
 
             <template v-slot:append>
-              <q-btn label="Change Password" no-caps push color="primary" />
+              <q-btn label="Change Password" no-caps push color="primary" size="md" />
             </template>
           </q-input>
         </template>
       </InputField>
     </div>
 
-    <!-- <div class="text-caption">
+    <div class="text-caption">
       Created at:
       <span class="date">{{ formattedDate }}</span>
-      &nbsp;|&nbsp;
-      <span class="time">{{ formattedTime }}</span>
-    </div> -->
+      <!-- &nbsp;|&nbsp; -->
+      <!-- <span class="time">{{ formattedTime }}</span> -->
+    </div>
   </q-form>
 </template>
 
@@ -116,7 +124,8 @@ const passwordRef = ref();
 const formPersonalInfoInputs = reactive({
   email: '',
   password: '',
-  displayName: ''
+  displayName: '',
+  emailVerified: false
 });
 
 // form inputs fill in.
@@ -124,6 +133,7 @@ const getFromPersonalInfoInputs = () => {
   formPersonalInfoInputs.email = user.email;
   formPersonalInfoInputs.password = '***********';
   formPersonalInfoInputs.displayName = user.displayName;
+  formPersonalInfoInputs.emailVerified = user.emailVerified;
 };
 
 // form submit action.
@@ -151,10 +161,23 @@ const formattedTime = computed(() => {
 });
 
 onMounted(() => {
-  // getFromPersonalInfoInputs();
+  getFromPersonalInfoInputs();
 });
 </script>
 
 <style scoped lang="scss">
-@import 'styles/FormPersonalInfo';
+.form-register {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+
+  :deep(.q-field__messages) {
+    color: #ab003c;
+  }
+
+  .text-caption {
+    text-align: center;
+  }
+}
 </style>
