@@ -1,12 +1,9 @@
 <template>
   <div class="listing-item">
-    <div class="item-icon">
-      <slot name="icon"></slot>
-    </div>
     <div class="item-title">{{ props.title }}</div>
 
-    <div class="tem-right">
-      <q-toggle v-model="value" />
+    <div class="item-right">
+      <slot name="rightInput"></slot>
     </div>
   </div>
 </template>
