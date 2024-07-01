@@ -1,6 +1,6 @@
 <template>
   <div class="content-section">
-    <div class="section-title">{{ props.sectionTitle }}</div>
+    <div class="section-title" v-if="props.sectionTitle">{{ props.sectionTitle }}</div>
     <div class="section-content">
       <slot name="content"></slot>
     </div>

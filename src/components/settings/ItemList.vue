@@ -27,6 +27,7 @@ const navigate = () => {
   background-color: #f9f9f9;
   border-radius: 8px;
   gap: 0.75rem;
+  max-height: 56px;
   cursor: pointer;
 
   .item-icon {

@@ -29,9 +29,9 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/SettingsPage.vue') },
       { path: 'personal-info', component: () => import('pages/PersonalInfoPage.vue') },
-      { path: 'account', component: () => import('pages/PersonalInfoPage.vue') },
+      { path: 'account', component: () => import('pages/AccountPage.vue') },
       { path: 'notifications', component: () => import('pages/NotificationsPage.vue') },
-      { path: 'security-privacy', component: () => import('pages/PersonalInfoPage.vue') },
+      { path: 'security-privacy', component: () => import('pages/SecurityPrivacyPage.vue') },
       { path: 'support', component: () => import('pages/PersonalInfoPage.vue') }
     ],
 

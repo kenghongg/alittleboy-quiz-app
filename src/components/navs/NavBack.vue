@@ -33,5 +33,6 @@ const router = useRouter();
   transform: translateX(-50%);
   font-size: 1.25rem;
   font-weight: 600;
+  white-space: nowrap;
 }
 </style>
