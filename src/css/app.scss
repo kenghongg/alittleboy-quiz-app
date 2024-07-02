@@ -1,16 +1,17 @@
 // app global css in SCSS form
-@import '@fontsource/inter'; // Defaults to weight 400
-@import '@fontsource/inter/500.css'; // Optional: weight 500
-@import '@fontsource/inter/600.css'; // Optional: weight 600
-@import '@fontsource/inter/700.css'; // Optional: weight 700
+@import "@fontsource/inter"; // Defaults to weight 400
+@import "@fontsource/inter/500.css"; // Optional: weight 500
+@import "@fontsource/inter/600.css"; // Optional: weight 600
+@import "@fontsource/inter/700.css"; // Optional: weight 700
 
-@import '@fontsource/poppins'; // Defaults to weight 400
-@import '@fontsource/poppins/500.css'; // Optional: weight 500
-@import '@fontsource/poppins/600.css'; // Optional: weight 600
-@import '@fontsource/poppins/700.css'; // Optional: weight 700
+@import "@fontsource/poppins"; // Defaults to weight 400
+@import "@fontsource/poppins/500.css"; // Optional: weight 500
+@import "@fontsource/poppins/600.css"; // Optional: weight 600
+@import "@fontsource/poppins/700.css"; // Optional: weight 700
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   color: #455a64;
+  background: $white;
   // color: #78909c;
 }
