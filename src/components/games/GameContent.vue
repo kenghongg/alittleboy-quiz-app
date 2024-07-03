@@ -22,12 +22,16 @@
 }
 
 .content-question {
-  height: 40%;
+  /* height: calc(100dvh; */
+
+  /* height: 100%; */
+  height: calc(100dvh - 364px - 2rem);
   // background: teal;
 }
 
 .content-answer {
-  height: 60%;
+  height: 304px;
+  /* height: 60%; */
   // background: salmon;
 }
 </style>

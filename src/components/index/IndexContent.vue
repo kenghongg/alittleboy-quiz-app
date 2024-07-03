@@ -16,7 +16,7 @@
         </div>
 
         <span>0</span>
-        Quizzes Played
+        Quiz Answered
       </div>
     </div>
   </div>
