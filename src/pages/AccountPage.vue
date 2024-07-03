@@ -1,24 +1,22 @@
 <template>
   <NavBack :pageTitle="'Account'" />
 
-  <ContentSection class="q-pa-md">
+  <ContentSection :sectionTitle="'Account'" class="q-pa-md">
     <template #content>
       <ListingWrapper>
         <template #item>
-          <ItemAction :title="'Full Name'" :content="user.displayName"></ItemAction>
           <ItemAction :title="'Email'">
             <template #rightInput>
               <q-btn
                 :label="user.emailVerified ? 'Verified' : 'Verify now'"
                 :disable="user.emailVerified"
                 :color="user.emailVerified ? 'green' : 'primary'"
-                class="q-mr-md"
               />
             </template>
           </ItemAction>
           <ItemAction :title="'Change password'">
             <template #rightInput>
-              <q-btn icon="chevron_right" flat />
+              <q-icon name="chevron_right" size="sm" />
             </template>
           </ItemAction>
         </template>
@@ -26,31 +24,38 @@
     </template>
   </ContentSection>
 
-  <!-- <ContentSection :sectionTitle="'Security'" class="q-pa-md">
+  <ContentSection :sectionTitle="'Personal'" class="q-pa-md">
     <template #content>
       <ListingWrapper>
         <template #item>
-          <ItemAction :title="'Enable Face ID'">
+          <ItemAction :title="'Full Name'">
             <template #rightInput>
-              <q-toggle v-model="toggleFaceID" color="dark" />
+              <div class="right-content">{{ user.displayName }}</div>
             </template>
           </ItemAction>
-          <ItemAction :title="'Enable 2FA'">
+          <ItemAction :title="'Phone Number'">
             <template #rightInput>
-              <q-toggle v-model="toggle2FA" color="dark" />
+              <q-btn
+                :label="user.emailVerified ? 'Verified' : 'Verify now'"
+                :disable="user.emailVerified"
+                :color="user.emailVerified ? 'green' : 'primary'"
+              />
             </template>
           </ItemAction>
-          <ItemAction :title="'Change password'">
+          <ItemAction :title="'Region'">
             <template #rightInput>
-              <q-btn icon="chevron_right" flat />
+              <CountryFlag :country="'sg'" :content="'Singapore'" />
+            </template>
+          </ItemAction>
+          <ItemAction :title="'Currency'">
+            <template #rightInput>
+              <CountryFlag :country="'sg'" :content="'SGD'" />
             </template>
           </ItemAction>
         </template>
       </ListingWrapper>
     </template>
-  </ContentSection> -->
-
-  <!-- <PersonalInfo /> -->
+  </ContentSection>
 </template>
 
 <script setup>
@@ -61,6 +66,7 @@ import ContentSection from 'src/components/settings/ContentSection.vue';
 import ListingWrapper from 'src/components/settings/ListingWrapper.vue';
 import ItemAction from 'src/components/settings/ItemAction.vue';
 import { useUserStore } from 'stores/user';
+import CountryFlag from 'src/components/settings/CountryFlag.vue';
 
 const userStore = useUserStore();
 const user = userStore.user;

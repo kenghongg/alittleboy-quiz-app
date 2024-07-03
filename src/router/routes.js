@@ -43,6 +43,18 @@ const routes = [
     children: [{ path: '', component: () => import('pages/InGamePage.vue') }],
     meta: { auth: true }
   },
+  {
+    path: '/rank',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/RankPage.vue') }],
+    meta: { auth: true }
+  },
+  {
+    path: '/activity',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [{ path: '', component: () => import('pages/ActivityPage.vue') }],
+    meta: { auth: true }
+  },
 
   // Always leave this as last one,
   // but you can also remove it

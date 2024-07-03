@@ -15,3 +15,49 @@ body {
   background: $white;
   // color: #78909c;
 }
+
+// settings
+.right-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 400;
+  font-size: 80%;
+  margin-left: auto;
+  padding-right: 1rem;
+}
+
+.toggle-btn {
+  margin-right: -1rem;
+}
+
+.dialog-content {
+  height: calc(100% - 60px);
+  // background: teal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
+  .content-icon {
+    display: flex;
+    margin: auto;
+    background: #118c8c;
+    background: linear-gradient(135deg, #118c8c, #6247d8);
+    align-items: center;
+    justify-content: center;
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+  }
+
+  .content-title {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  .content-para {
+    font-wsize: 1rem;
+    text-align: center;
+  }
+}

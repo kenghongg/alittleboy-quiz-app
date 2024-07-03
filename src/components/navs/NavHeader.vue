@@ -2,9 +2,7 @@
   <q-header>
     <q-toolbar>
       <q-btn flat dense to="/" exact>Home</q-btn>
-
       <q-btn flat dense to="/about">About</q-btn>
-
       <q-btn flat dense to="/settings" v-if="ui.userLoggedIn">Settings</q-btn>
 
       <q-space />

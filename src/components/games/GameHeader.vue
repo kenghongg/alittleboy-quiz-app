@@ -8,7 +8,7 @@
   </div>
 
   <q-dialog v-model="closeDialogConfirm">
-    <div><q-btn label="close" v-close-popup /></div>
+    <div><q-btn label="close" @click="router.push('/')" /></div>
   </q-dialog>
 </template>
 

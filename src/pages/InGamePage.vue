@@ -2,10 +2,10 @@
   <GameHeader />
   <GameContent>
     <template #question>
-      <div class="question-content"></div>
+      <ContentQuestion :imgQuestion="'src/assets/games/01.png'" />
     </template>
     <template #answer>
-      <div class="answer-content"></div>
+      <ContentAnswer />
     </template>
   </GameContent>
 </template>
@@ -19,8 +19,8 @@ import ContentAnswer from 'components/games/ContentAnswer.vue';
 
 <style lang="scss" scoped>
 .answer-content {
-  margin-top: auto;
-  background: salmon;
-  padding: 1rem;
+  // margin-top: auto;
+  // background: salmon;
+  // padding: 1rem;
 }
 </style>
