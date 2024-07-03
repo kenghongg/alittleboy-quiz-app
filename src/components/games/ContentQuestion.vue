@@ -14,7 +14,7 @@ const props = defineProps(['imgQuestion']);
   height: 100%;
   justify-content: center;
   align-items: center;
-  opacity: 0.3;
+  /* opacity: 0.3; */
   padding: 1rem;
 }
 </style>

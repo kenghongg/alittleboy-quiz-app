@@ -66,7 +66,7 @@ const selectAnswer = (index) => {
       &.active {
         /* background: salmon; */
         color: #f9f9f9;
-        background: $primary;
+        background: $red;
       }
     }
 
