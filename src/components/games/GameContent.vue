@@ -1,37 +1,46 @@
 <template>
   <div class="game-content">
-    <div class="content-question" v-if="$slots.question">
-      <slot name="question"></slot>
-    </div>
-
-    <div class="content-answer" v-if="$slots.answer">
-      <slot name="answer"></slot>
-    </div>
+    <ContentQuestion :questionImg="props.list[0].question.imgPath" :contentCorrect="contentCorrect" />
+    <ContentAnswer :ansList="props.list[0].ans" @ansSubmit="ansSubmission" />
+    <!-- <div class="content-question" :class="contentQuestionActive"> -->
+    <!-- <ContentQuestion :questionImg="props.list[0].question.imgPath" /> -->
+    <!-- </div>
+    <div class="content-answer"> -->
+    <!-- <ContentAnswer :ansList="props.list[0].ans" @ansSubmit="ansSubmission" /> -->
+    <!-- </div> -->
   </div>
+  <!-- <pre>contentCorrect~{{ contentCorrect }}</pre> -->
+  <!-- <pre>contentQuestionActive~{{ contentQuestionActive }}</pre> -->
+  <!-- <pre>ansRef~{{ ansRef }}</pre> -->
+  <!-- <pre>list = {{ props.list[0].ans }}</pre> -->
 </template>
 
 <script setup>
-// const props = defineProps(['label']);
+const props = defineProps(['list']);
+import { ref } from 'vue';
+import ContentQuestion from 'components/games/ContentQuestion.vue';
+import ContentAnswer from 'components/games/ContentAnswer.vue';
+
+const contentQuestionActive = ref(false);
+const contentCorrect = ref(false);
+const ansRef = ref();
+
+const ansSubmission = (item) => {
+  ansRef.value = item;
+
+  contentQuestionActive.value = true;
+
+  if (item.ansActive && item.ansCorrect) {
+    contentCorrect.value = true;
+  } else {
+    contentCorrect.value = false;
+  }
+};
 </script>
 
 <style scoped lang="scss">
 .game-content {
-  height: calc(100dvh - 60px);
-  // background: rgba(0, 0, 0, 0.2);
+  height: calc(100dvh - 4rem);
   padding: 1rem;
-}
-
-.content-question {
-  /* height: calc(100dvh; */
-
-  /* height: 100%; */
-  height: calc(100dvh - 364px - 2rem);
-  // background: teal;
-}
-
-.content-answer {
-  height: 304px;
-  /* height: 60%; */
-  // background: salmon;
 }
 </style>

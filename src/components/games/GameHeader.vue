@@ -1,6 +1,4 @@
 <template>
-  <!-- <div style="background: teal; height: 60px"></div> -->
-
   <div class="game-toolbar">
     <!-- <div class="game-subtitle">Quiz</div> -->
     <!-- <div class="game-title">Country Flags</div> -->
@@ -24,11 +22,15 @@ const closeDialogConfirm = ref(false);
 
 <style scoped lang="scss">
 .game-toolbar {
-  height: 60px;
+  height: 4rem;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 1rem;
+  // width: 100%;
+  // position: fixed;
+  // top: 0;
+  // left: 0;
 }
 
 .close-btn {

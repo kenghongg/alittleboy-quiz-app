@@ -1,78 +1,117 @@
 <template>
-  <div class="answer-selection">
-    <div class="selection-item" v-for="(item, index) in answersList" :key="index">
-      <q-btn
-        class="item-answer"
-        flat
-        no-caps
-        @click="selectAnswer(index)"
-        :class="{ active: item.answerActive }"
-      >
-        <div>{{ item.answerLabel }}</div>
-      </q-btn>
-      <!-- <div class="item-sound">
-        <q-btn icon="volume_up" round flat class="sound-btn" @click="() => speak(item.answerLabel)" />
-      </div> -->
+  <div
+    class="content-answer"
+    :class="answerActive && answerCorrect ? 'correct' : answerActive ? 'wrong' : ''"
+  >
+    <div class="answer-selection">
+      <div class="selection-item" v-for="(item, index) in ansListing" :key="index">
+        <q-btn
+          class="item-answer"
+          flat
+          no-caps
+          @click="selectAnswer(index)"
+          :class="{ active: item.ansActive }"
+        >
+          <div>{{ item.ansLabel }}</div>
+        </q-btn>
+      </div>
     </div>
   </div>
+
+  <!-- <pre>answerActive~{{ answerActive }}</pre> -->
+  <!-- <pre>answerCorrect~{{ answerCorrect }}</pre> -->
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { useSpeechSynthesis } from 'src/utils/useSpeechSynthesis';
 
 const { speak } = useSpeechSynthesis();
 
-const answersList = ref([]);
+const props = defineProps(['ansList']);
+const emits = defineEmits(['ansSubmit']);
 
-answersList.value = [
-  { answerId: '1', answerLabel: 'Malaysia', answerActive: false },
-  { answerId: '2', answerLabel: 'Maldives', answerActive: false },
-  { answerId: '3', answerLabel: 'United States', answerActive: false },
-  { answerId: '4', answerLabel: 'Israel', answerActive: false }
-];
+const answerActive = ref(false);
+const answerCorrect = ref(false);
+
+const ansListing = ref([]);
 
 const selectAnswer = (index) => {
-  answersList.value.forEach((item, i) => {
-    item.answerActive = i === index;
+  ansListing.value.forEach((item, i) => {
+    item.ansActive = i === index;
     if (i === index) {
-      speak(item.answerLabel);
+      speak(item.ansLabel);
+      emits('ansSubmit', item);
+      answerActive.value = true;
+      answerCorrect.value = false;
+
+      if (item.ansActive && item.ansCorrect) {
+        answerCorrect.value = true;
+      }
     }
   });
 };
+
+onMounted(() => {
+  ansListing.value = props.ansList;
+});
 </script>
 
 <style lang="scss" scoped>
-.answer-selection {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  row-gap: 1rem;
-  column-gap: 1rem;
+.content-answer {
+  height: 24rem;
 
-  .selection-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+  &.correct .answer-selection .selection-item .item-answer {
+    opacity: 0.5;
 
-    .item-answer {
-      padding: 1rem;
-      background-color: #f9f9f9;
-      width: 100%;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 1rem;
-      height: 60px;
-
-      &.active {
-        /* background: salmon; */
-        color: #f9f9f9;
-        background: $red;
-      }
+    &.active {
+      background: $green;
+      // position: fixed;
+      // bottom: 1rem;
+      // left: 1rem;
+      // width: calc(100% - 2rem);
+      opacity: 1;
     }
+  }
 
-    .item-sound {
-      .sound-btn {
-        background: transparent;
+  &.wrong .answer-selection .selection-item .item-answer.active {
+    background: $red;
+  }
+
+  .answer-selection {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    row-gap: 1rem;
+    column-gap: 1rem;
+
+    .selection-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      .item-answer {
+        padding: 1rem;
+        background-color: #f9f9f9;
+        width: 100%;
+        border-radius: 8px;
+        text-align: center;
+        font-size: 1rem;
+        height: 4rem;
+        position: relative;
+        opacity: 1;
+        transition: 0.3s all;
+
+        &.active {
+          /* background: salmon; */
+          color: #f9f9f9;
+          // background: $red;
+        }
+      }
+
+      .item-sound {
+        .sound-btn {
+          background: transparent;
+        }
       }
     }
   }

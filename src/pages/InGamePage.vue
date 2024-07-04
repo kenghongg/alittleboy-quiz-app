@@ -1,13 +1,17 @@
 <template>
   <GameHeader />
-  <GameContent>
-    <template #question>
-      <ContentQuestion :imgQuestion="quizList[0].question.imgPath" />
-    </template>
-    <template #answer>
-      <ContentAnswer />
-    </template>
-  </GameContent>
+  <GameContent :list="quizList" />
+
+  <div class="ads-placement"></div>
+
+  <!-- <GameContent> -->
+  <!-- <template #question> -->
+  <!-- <ContentQuestion :imgQuestion="quizList[0].question.imgPath" /> -->
+  <!-- </template> -->
+  <!-- <template #answer> -->
+  <!-- <ContentAnswer /> -->
+  <!-- </template> -->
+  <!-- </GameContent> -->
 
   <!-- <pre>quizList{{ quizList[0].question.imgPath }}</pre> -->
 </template>
@@ -16,8 +20,8 @@
 import { ref } from 'vue';
 import GameHeader from 'components/games/GameHeader.vue';
 import GameContent from 'components/games/GameContent.vue';
-import ContentQuestion from 'components/games/ContentQuestion.vue';
-import ContentAnswer from 'components/games/ContentAnswer.vue';
+// import ContentQuestion from 'components/games/ContentQuestion.vue';
+// import ContentAnswer from 'components/games/ContentAnswer.vue';
 
 const quizList = ref([]);
 
@@ -45,4 +49,13 @@ quizList.value = [
 ];
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+// .ads-placement {
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   height: 4rem;
+//   width: 100%;
+//   background: #ccc;
+// }
+</style>
