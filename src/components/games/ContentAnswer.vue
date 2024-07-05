@@ -4,6 +4,12 @@
     :class="answerActive && answerCorrect ? 'correct' : answerActive ? 'wrong' : ''"
   >
     <div class="answer-selection">
+      <div class="selection-item" style="opacity: 0">
+        <q-btn class="item-answer" flat no-caps>
+          <div>Empty</div>
+        </q-btn>
+      </div>
+
       <div class="selection-item" v-for="(item, index) in ansListing" :key="index">
         <q-btn
           class="item-answer"
@@ -59,10 +65,10 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .content-answer {
-  height: 24rem;
+  /* height: 24rem; */
 
   &.correct .answer-selection .selection-item .item-answer {
-    opacity: 0.5;
+    /* opacity: 0.5; */
 
     &.active {
       background: $green;
@@ -100,6 +106,10 @@ onMounted(() => {
         position: relative;
         opacity: 1;
         transition: 0.3s all;
+        /* background-color: #ffffff;
+        box-shadow:
+          0 4px 6px rgba(0, 0, 0, 0.1),
+          0 10px 20px rgba(0, 0, 0, 0.15); */
 
         &.active {
           /* background: salmon; */

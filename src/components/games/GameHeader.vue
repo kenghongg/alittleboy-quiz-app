@@ -27,10 +27,11 @@ const closeDialogConfirm = ref(false);
   align-items: center;
   justify-content: center;
   padding: 0 1rem;
-  // width: 100%;
-  // position: fixed;
-  // top: 0;
-  // left: 0;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  /* background: salmon; */
 }
 
 .close-btn {

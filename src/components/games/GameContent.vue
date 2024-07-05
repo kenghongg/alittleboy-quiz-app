@@ -1,18 +1,8 @@
 <template>
   <div class="game-content">
-    <ContentQuestion :questionImg="props.list[0].question.imgPath" :contentCorrect="contentCorrect" />
-    <ContentAnswer :ansList="props.list[0].ans" @ansSubmit="ansSubmission" />
-    <!-- <div class="content-question" :class="contentQuestionActive"> -->
-    <!-- <ContentQuestion :questionImg="props.list[0].question.imgPath" /> -->
-    <!-- </div>
-    <div class="content-answer"> -->
-    <!-- <ContentAnswer :ansList="props.list[0].ans" @ansSubmit="ansSubmission" /> -->
-    <!-- </div> -->
+    <ContentQuestion :questionImg="props.list.question.imgPath" :contentCorrect="contentCorrect" />
+    <ContentAnswer :ansList="props.list.ans" @ansSubmit="ansSubmission" />
   </div>
-  <!-- <pre>contentCorrect~{{ contentCorrect }}</pre> -->
-  <!-- <pre>contentQuestionActive~{{ contentQuestionActive }}</pre> -->
-  <!-- <pre>ansRef~{{ ansRef }}</pre> -->
-  <!-- <pre>list = {{ props.list[0].ans }}</pre> -->
 </template>
 
 <script setup>
@@ -25,22 +15,26 @@ const contentQuestionActive = ref(false);
 const contentCorrect = ref(false);
 const ansRef = ref();
 
+// const ansSubmission = (item) => {
+//   ansRef.value = item;
+//   contentQuestionActive.value = true;
+//   if (item.ansActive && item.ansCorrect) {
+//     contentCorrect.value = true;
+//   } else {
+//     contentCorrect.value = false;
+//   }
+// };
+
 const ansSubmission = (item) => {
   ansRef.value = item;
-
   contentQuestionActive.value = true;
-
-  if (item.ansActive && item.ansCorrect) {
-    contentCorrect.value = true;
-  } else {
-    contentCorrect.value = false;
-  }
+  contentCorrect.value = item.ansActive && item.ansCorrect;
 };
 </script>
 
 <style scoped lang="scss">
 .game-content {
-  height: calc(100dvh - 4rem);
+  height: 100dvh;
   padding: 1rem;
 }
 </style>

@@ -1,25 +1,4 @@
-<template>
-  <div class="in-game-wrapper">
-    <GameHeader />
-    <!-- <GameContent v-for="(item, index) in quizList" :key="index" :list="item" /> -->
-
-    <GameContent :list="quizList[0]" />
-    <!-- <GameContent :list="quizList" /> -->
-
-    <!-- <div class="ads-placement"></div> -->
-  </div>
-</template>
-
-<script setup>
-import { ref } from 'vue';
-import GameHeader from 'components/games/GameHeader.vue';
-import GameContent from 'components/games/GameContent.vue';
-// import ContentQuestion from 'components/games/ContentQuestion.vue';
-// import ContentAnswer from 'components/games/ContentAnswer.vue';
-
-const quizList = ref([]);
-quizList.value = [
-  {
+{
     id: 1,
     question: { imgPath: 'src/assets/games/01.png' },
     ans: [
@@ -69,20 +48,3 @@ quizList.value = [
       { ansId: '4', ansLabel: 'Isrfghael', ansActive: false, ansCorrect: false }
     ]
   }
-];
-</script>
-
-<style lang="scss" scoped>
-// .ads-placement {
-//   position: absolute;
-//   bottom: 0;
-//   left: 0;
-//   height: 4rem;
-//   width: 100%;
-//   background: #ccc;
-// }
-
-.in-game-wrapper {
-  overflow: hidden;
-}
-</style>
