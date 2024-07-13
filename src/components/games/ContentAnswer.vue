@@ -18,7 +18,10 @@
           @click="selectAnswer(index)"
           :class="{ active: item.ansActive }"
         >
-          <div>{{ item.ansLabel }}</div>
+          <div class="answer-img" :style="{ backgroundImage: 'url(' + item.imgPath + ')' }">
+            <img src="../../assets/games/img-placeholder.jpg" />
+          </div>
+          <!-- <div>{{ item.ansLabel }}</div> -->
         </q-btn>
       </div>
     </div>
@@ -68,14 +71,8 @@ onMounted(() => {
   /* height: 24rem; */
 
   &.correct .answer-selection .selection-item .item-answer {
-    /* opacity: 0.5; */
-
     &.active {
       background: $green;
-      // position: fixed;
-      // bottom: 1rem;
-      // left: 1rem;
-      // width: calc(100% - 2rem);
       opacity: 1;
     }
   }
@@ -86,7 +83,7 @@ onMounted(() => {
 
   .answer-selection {
     display: grid;
-    grid-template-columns: repeat(1, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     row-gap: 1rem;
     column-gap: 1rem;
 
@@ -95,14 +92,22 @@ onMounted(() => {
       align-items: center;
       gap: 1rem;
 
+      &:first-child {
+        grid-column: span 2;
+        .item-answer {
+          height: 4rem;
+        }
+      }
+
       .item-answer {
         padding: 1rem;
         background-color: #f9f9f9;
+        // background-color: #c1da7c;
         width: 100%;
         border-radius: 8px;
         text-align: center;
         font-size: 1rem;
-        height: 4rem;
+        height: 8rem;
         position: relative;
         opacity: 1;
         transition: 0.3s all;
@@ -112,9 +117,23 @@ onMounted(() => {
           0 10px 20px rgba(0, 0, 0, 0.15); */
 
         &.active {
-          /* background: salmon; */
           color: #f9f9f9;
-          // background: $red;
+        }
+
+        .answer-img {
+          aspect-ratio: 1 / 1;
+          background-position: center center;
+          background-size: contain;
+          background-repeat: no-repeat;
+          margin: auto;
+          // opacity: 0.1;
+
+          img {
+            display: block;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+          }
         }
       }
 

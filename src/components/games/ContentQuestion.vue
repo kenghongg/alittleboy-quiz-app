@@ -4,14 +4,21 @@
       <q-img :src="props.questionImg" spinner-color="primary" />
     </div> -->
 
-    <div class="question-img" :style="{ backgroundImage: 'url(' + props.questionImg + ')' }">
-      <img src="../../assets/games/img-placeholder.jpg" />
-    </div>
+    <template v-if="props.questionImg">
+      <div class="question-img" :style="{ backgroundImage: 'url(' + props.questionImg + ')' }">
+        <img src="../../assets/games/img-placeholder.jpg" />
+      </div>
+    </template>
+    <template v-else>
+      <div class="question-label">
+        {{ props.questionLabel }}
+      </div>
+    </template>
   </div>
 </template>
 
 <script setup>
-const props = defineProps(['questionImg', 'contentCorrect']);
+const props = defineProps(['questionImg', 'questionLabel', 'contentCorrect']);
 </script>
 
 <style lang="scss" scoped>
@@ -26,7 +33,6 @@ const props = defineProps(['questionImg', 'contentCorrect']);
 
   .question-img {
     aspect-ratio: 1 / 1;
-    /* background: salmon; */
     max-height: 18rem;
     /* padding: 1rem; */
     background-position: center bottom;
@@ -41,12 +47,26 @@ const props = defineProps(['questionImg', 'contentCorrect']);
     }
   }
 
+  .question-label {
+    aspect-ratio: 1 / 1;
+    max-height: 18rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin: auto;
+    padding: 1rem;
+    font-size: 3rem;
+    text-align: center;
+    font-weight: 600;
+    // opacity: 0.1;
+    // background: salmon;
+  }
+
   .img-question {
     display: flex;
     height: 100%;
     justify-content: center;
     align-items: center;
-    /* opacity: 0.1; */
     padding: 1rem;
   }
 }

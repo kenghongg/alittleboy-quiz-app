@@ -21,12 +21,36 @@ const quizList = ref([]);
 quizList.value = [
   {
     id: 1,
-    question: { imgPath: 'src/assets/games/01.png' },
+    question: { questLabel: 'United States', imgPath: '' },
     ans: [
-      { ansId: '1', ansLabel: 'Malaysia', ansActive: false, ansCorrect: false },
-      { ansId: '2', ansLabel: 'Maldives', ansActive: false, ansCorrect: false },
-      { ansId: '3', ansLabel: 'United States', ansActive: false, ansCorrect: true },
-      { ansId: '4', ansLabel: 'Israel', ansActive: false, ansCorrect: false }
+      {
+        ansId: '1',
+        ansLabel: 'Malaysia',
+        imgPath: 'src/assets/games/01.png',
+        ansActive: false,
+        ansCorrect: false
+      },
+      {
+        ansId: '2',
+        ansLabel: 'Maldives',
+        imgPath: 'src/assets/games/01.png',
+        ansActive: false,
+        ansCorrect: false
+      },
+      {
+        ansId: '3',
+        ansLabel: 'United States',
+        imgPath: 'src/assets/games/01.png',
+        ansActive: false,
+        ansCorrect: true
+      },
+      {
+        ansId: '4',
+        ansLabel: 'Israel',
+        imgPath: 'src/assets/games/01.png',
+        ansActive: false,
+        ansCorrect: false
+      }
     ]
   },
   {

@@ -1,6 +1,10 @@
 <template>
   <div class="game-content">
-    <ContentQuestion :questionImg="props.list.question.imgPath" :contentCorrect="contentCorrect" />
+    <ContentQuestion
+      :questionLabel="props.list.question.questLabel"
+      :questionImg="props.list.question.imgPath"
+      :contentCorrect="contentCorrect"
+    />
     <ContentAnswer :ansList="props.list.ans" @ansSubmit="ansSubmission" />
   </div>
 </template>
