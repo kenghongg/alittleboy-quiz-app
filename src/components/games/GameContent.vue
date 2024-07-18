@@ -1,19 +1,20 @@
 <template>
   <div class="game-content">
-    <ContentQuestion
-      :questionLabel="props.list.question.questLabel"
-      :questionImg="props.list.question.imgPath"
-      :contentCorrect="contentCorrect"
-    />
-    <ContentAnswer :ansList="props.list.ans" @ansSubmit="ansSubmission" />
+    <pre>props{{ dataList }}</pre>
+    <pre>props {{ props.list }}</pre>
+    <!-- <ContentQuestion :questionLabel="dataList.question" :questionImg="dataList.question_img" /> -->
+    <!-- :contentCorrect="contentCorrect" -->
+    <!-- <ContentAnswer :ansList="props.list.answers" @ansSubmit="ansSubmission" />  -->
   </div>
 </template>
 
 <script setup>
 const props = defineProps(['list']);
-import { ref } from 'vue';
+import { ref, onMounted, reactive } from 'vue';
 import ContentQuestion from 'components/games/ContentQuestion.vue';
 import ContentAnswer from 'components/games/ContentAnswer.vue';
+
+const dataList = reactive({ question: '', question_img: '' });
 
 const contentQuestionActive = ref(false);
 const contentCorrect = ref(false);
@@ -34,6 +35,17 @@ const ansSubmission = (item) => {
   contentQuestionActive.value = true;
   contentCorrect.value = item.ansActive && item.ansCorrect;
 };
+
+const getDataList = () => {
+  // dataList.value = props.list;
+
+  dataList.question = props.list.question;
+  dataList.question_img = props.list.question_img;
+};
+
+onMounted(() => {
+  getDataList();
+});
 </script>
 
 <style scoped lang="scss">

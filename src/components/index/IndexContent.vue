@@ -20,24 +20,41 @@
       </div>
     </div>
   </div>
+
+  <button @click="handleLogout" :disabled="loading" v-if="status === 'LOGGED_IN'">Logout</button>
+  <pre>useUI{{ useUI().userLoggedIn }}</pre>
+  <pre>status:{{ status }}</pre>
+  <pre>Session: {{ userStore }}</pre>
 </template>
 
 <script setup>
+import { ref, onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
-import FirebaseSignout from 'src/firebase/firebase-signout';
 import { useUI } from 'stores/ui';
+import { useUserStore } from 'stores/user';
 
 const router = useRouter();
 const ui = useUI();
+const userStore = useUserStore();
+const user = userStore.user;
+const status = userStore.status;
+const loading = userStore.loading;
 
 // logout action.
-const userLogOut = () => {
-  FirebaseSignout().then(() => {
-    router.push('/').then(() => {
-      window.location.reload();
-    });
+const handleLogout = async () => {
+  await userStore.supabaseLogout();
+  router.push('/').then(() => {
+    window.location.reload();
   });
 };
+
+// const userLogOut = () => {
+//   FirebaseSignout().then(() => {
+//     router.push('/').then(() => {
+//       window.location.reload();
+//     });
+//   });
+// };
 </script>
 
 <style lang="scss" scoped>

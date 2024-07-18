@@ -25,48 +25,12 @@
       </InputField>
     </div>
 
-    <div>
-      <InputField :label="'Password'">
-        <template #input>
-          <q-input
-            v-model="formLoginInputs.password"
-            :rules="[(val) => (val && val.length > 0) || 'Please insert password']"
-            :type="showPassword ? 'text' : 'password'"
-            autocomplete="password"
-            label-color="brand"
-            placeholder="Please insert password"
-            ref="passwordRef"
-            hide-bottom-space
-            outlined
-          >
-            <template v-slot:prepend>
-              <q-icon name="lock" />
-            </template>
-            <template v-slot:append>
-              <q-icon
-                :name="showPassword ? 'visibility_off' : 'visibility'"
-                @click="togglePasswordVisibility"
-              />
-            </template>
-          </q-input>
-        </template>
-      </InputField>
-    </div>
-
-    <!-- <div style="margin-top: 20px">
-      <q-btn @click="googleSignIn" color="red" label="Sign in with Google" size="lg" style="width: 100%">
-        <template v-slot:prepend>
-          <q-icon name="fab fa-google" />
-        </template>
-      </q-btn>
-    </div> -->
-
     <div class="q-mt-auto">
       <q-btn
         type="submit"
-        :loading="submitting"
+        :loading="loading"
         color="primary"
-        label="Login"
+        label="Send Access Link"
         size="lg"
         no-caps
         style="width: 100%"
@@ -82,45 +46,45 @@
 <script setup>
 import { ref, reactive } from 'vue';
 import { useRouter } from 'vue-router';
+import { useUserStore } from 'stores/user';
 import InputField from 'components/forms/InputField.vue';
-import FirebaseLogin from 'src/firebase/firebase-login';
 
 const router = useRouter();
+const userStore = useUserStore();
 
-// loading / submitting state.
-const submitting = ref(false);
-
-// form ref.
+const loading = ref(false);
 const loginForm = ref(null);
-
-// form inputs ref.
 const emailRef = ref();
-const passwordRef = ref();
 
-// form inputs for v-model.
 const formLoginInputs = reactive({
-  email: null,
-  password: null
+  email: null
 });
-
-// password input show / hide.
-const showPassword = ref(false);
-const togglePasswordVisibility = () => {
-  showPassword.value = !showPassword.value;
-};
 
 // form submit action.
 const formSubmit = async () => {
-  submitting.value = true;
+  loading.value = true;
 
   try {
-    if (loginForm.value.validate() && !!(await FirebaseLogin(formLoginInputs))) {
-      router.push('/app');
+    if (loginForm.value.validate() && !!(await userStore.supabaseLogin(formLoginInputs))) {
+      // router.push('/app');
+      console.log(formLoginInputs, 'Check Email');
     }
   } finally {
-    submitting.value = false;
+    loading.value = false;
   }
 };
+
+// const formSubmit = async () => {
+//   submitting.value = true;
+
+//   try {
+//     if (loginForm.value.validate() && !!(await FirebaseLogin(formLoginInputs))) {
+//       router.push('/app');
+//     }
+//   } finally {
+//     submitting.value = false;
+//   }
+// };
 </script>
 
 <style scoped lang="scss">

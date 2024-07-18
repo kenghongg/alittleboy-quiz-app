@@ -2,14 +2,14 @@
   <q-toolbar class="top-toolbar">
     <q-btn @click="router.push('/')" icon="chevron_left" flat round />
     <q-space />
-    <q-btn
+    <!-- <q-btn
       :label="authHeader.title"
       @click="router.push(authHeader.path)"
       flat
       no-caps
       size="md"
       color="primary"
-    />
+    /> -->
   </q-toolbar>
 </template>
 <script setup>

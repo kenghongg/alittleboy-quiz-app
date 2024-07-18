@@ -12,7 +12,7 @@
       </template>
       <template v-else>
         <template v-if="ui.userLoggedIn">
-          <q-btn @click="userLogOut">Logout</q-btn>
+          <!-- <q-btn @click="userLogOut">Logout</q-btn> -->
         </template>
         <template v-else>
           <q-btn @click="router.push('/login')">Login</q-btn>
@@ -25,20 +25,20 @@
 
 <script setup>
 import { useRouter } from 'vue-router';
-import FirebaseSignout from 'src/firebase/firebase-signout';
+// import FirebaseSignout from 'src/firebase/firebase-signout';
 import { useUI } from 'stores/ui';
 
 const router = useRouter();
 const ui = useUI();
 
 // logout action.
-const userLogOut = () => {
-  FirebaseSignout().then(() => {
-    router.push('/').then(() => {
-      window.location.reload();
-    });
-  });
-};
+// const userLogOut = () => {
+//   FirebaseSignout().then(() => {
+//     router.push('/').then(() => {
+//       window.location.reload();
+//     });
+//   });
+// };
 </script>
 
 <style scoped>

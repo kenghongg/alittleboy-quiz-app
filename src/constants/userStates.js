@@ -1,0 +1,5 @@
+export const USER_STATES = {
+  LOGGED_IN: 'LOGGED_IN',
+  NON_LOGIN: 'NON_LOGIN',
+  UNKNOWN: 'UNKNOWN'
+};

@@ -1,32 +1,106 @@
 import { defineStore } from 'pinia';
-import { LocalStorage } from 'quasar';
-import { auth } from 'src/firebase';
+import { ref, computed } from 'vue';
+import supabase from 'src/supabase/index.js';
+import { USER_STATES } from 'src/constants/userStates.js';
+import { useQuasar } from 'quasar';
 
-export const useUserStore = defineStore('user', {
-  state: () => ({
-    user: LocalStorage.getItem('user') || null
-  }),
+export const useUserStore = defineStore('user', () => {
+  const $q = useQuasar();
 
-  actions: {
-    setUser(user) {
-      this.user = user;
-      LocalStorage.set('user', user);
-    },
+  const user = ref(null);
+  const status = ref(USER_STATES.UNKNOWN);
 
-    clearUser() {
-      this.user = null;
-      LocalStorage.remove('user');
+  const loading = ref(false);
+
+  const getUserSession = async () => {
+    const { data } = await supabase.auth.getSession();
+    updateUser(data.session);
+  };
+
+  const updateUser = (session) => {
+    if (session) {
+      user.value = session.user;
+      status.value = USER_STATES.LOGGED_IN;
+    } else {
+      user.value = null;
+      status.value = USER_STATES.NON_LOGIN;
     }
+  };
 
-    // Initialize the store with the current Firebase auth state
-    // initializeAuthState() {
-    //   auth.onAuthStateChanged((user) => {
-    //     if (user) {
-    //       this.setUser(user);
-    //     } else {
-    //       this.clearUser();
-    //     }
-    //   });
-    // }
-  }
+  const clearUser = () => {
+    user.value = null;
+    status.value = USER_STATES.NON_LOGIN;
+  };
+
+  const listenToAuthChanges = () => {
+    supabase.auth.onAuthStateChange((_, session) => {
+      updateUser(session);
+    });
+  };
+
+  const supabaseLogin = async (values) => {
+    loading.value = true;
+    try {
+      const { error } = await supabase.auth.signInWithOtp(values);
+      if (error) {
+        $q.notify({
+          type: 'negative',
+          message: error.message,
+          position: 'top',
+          icon: 'report_problem'
+        });
+      } else {
+        $q.notify({
+          type: 'positive',
+          message: 'Login successfully',
+          position: 'top',
+          icon: 'check_circle'
+        });
+      }
+    } catch (err) {
+      $q.notify({
+        type: 'negative',
+        message: err.message,
+        position: 'top',
+        icon: 'report_problem'
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  const supabaseLogout = async () => {
+    loading.value = true;
+    try {
+      await supabase.auth.signOut();
+      const userStore = useUserStore();
+      userStore.clearUser();
+      $q.notify({
+        type: 'positive',
+        message: 'Logged out successfully',
+        position: 'top',
+        icon: 'check_circle'
+      });
+    } catch (err) {
+      $q.notify({
+        type: 'negative',
+        message: err.message,
+        position: 'top',
+        icon: 'report_problem'
+      });
+    } finally {
+      loading.value = false;
+    }
+  };
+
+  return {
+    user: computed(() => user.value),
+    status: computed(() => status.value),
+    getUserSession,
+    clearUser,
+    listenToAuthChanges,
+    supabaseLogin,
+    supabaseLogout,
+    loading
+  };
 });

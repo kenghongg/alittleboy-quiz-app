@@ -1,9 +1,9 @@
 <template>
-  <router-view />
+  <AuthProvider>
+    <router-view />
+  </AuthProvider>
 </template>
 
 <script setup>
-defineOptions({
-  name: 'App'
-});
+import AuthProvider from 'components/auth/AuthProvider.vue';
 </script>

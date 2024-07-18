@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "question": "United States",
+    "questionImg": null,
+    "description": "Which country flag is United States",
+    "answers": {
+      "answer_a": {
+        "label": "Malaysia",
+        "img": "src/assets/games/01.png",
+        "active": false,
+        "correct": false
+      },
+      "answer_b": {
+        "label": "Maldives",
+        "img": "src/assets/games/02.png",
+        "active": false,
+        "correct": false
+      },
+      "answer_c": {
+        "label": "Isreal",
+        "img": "src/assets/games/03.png",
+        "active": false,
+        "correct": false
+      },
+      "answer_d": {
+        "label": "United States",
+        "img": "src/assets/games/04.png",
+        "active": false,
+        "correct": true
+      },
+      "answer_e": null,
+      "answer_f": null
+    },
+    "multiple_correct_answers": "false",
+    "correct_explain": "yes",
+    "wrong_explain": "nono",
+    "explanation": null,
+    "tip": null,
+    "tags": [],
+    "category": "country",
+    "difficulty": "Easy"
+  }
+]
