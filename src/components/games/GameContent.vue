@@ -151,7 +151,7 @@ const shuffledAnswers = computed(() => {
   return [];
 });
 
-const correctSound = new Audio('src/assets/sound/correct.flac');
+const correctSound = new Audio('src/assets/sound/correct.mp3');
 const wrongSound = new Audio('src/assets/sound/wrong.mp3');
 
 const checkAnswer = (answer) => {
@@ -176,7 +176,6 @@ const checkAnswer = (answer) => {
       // voiceRead(`No! The answer is not ${answer}`);
       wrongSound.play();
       // voiceRead(answer).then(() => {
-      wrongSound.volume = 0.3;
       wrongSound.play();
       // });
     }
