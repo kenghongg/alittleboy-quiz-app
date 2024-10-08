@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
-import { ref, computed } from 'vue';
-import supabase from 'src/supabase/index.js';
-import { USER_STATES } from 'src/constants/userStates.js';
 import { useQuasar } from 'quasar';
+import { USER_STATES } from 'src/constants/userStates.js';
+import supabase from 'src/supabase/index.js';
+import { computed, ref } from 'vue';
 
 export const useUserStore = defineStore('user', () => {
   const $q = useQuasar();
@@ -49,13 +49,15 @@ export const useUserStore = defineStore('user', () => {
           position: 'top',
           icon: 'report_problem'
         });
+        return false;
       } else {
         $q.notify({
           type: 'positive',
-          message: 'Login successfully',
+          message: 'Access link sent successfully',
           position: 'top',
           icon: 'check_circle'
         });
+        return true;
       }
     } catch (err) {
       $q.notify({
@@ -64,6 +66,7 @@ export const useUserStore = defineStore('user', () => {
         position: 'top',
         icon: 'report_problem'
       });
+      return false;
     } finally {
       loading.value = false;
     }

@@ -13,7 +13,7 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import GameHeader from 'components/games/GameHeader.vue';
-import GameContent from 'components/games/GameContent.vue';
+import GameContent from 'src/components/games/GameContent-backup.vue';
 import supabase from 'src/supabase/index.js';
 
 const databaseData = ref([]);

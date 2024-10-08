@@ -22,16 +22,15 @@
   </div>
 
   <button @click="handleLogout" :disabled="loading" v-if="status === 'LOGGED_IN'">Logout</button>
-  <pre>useUI{{ useUI().userLoggedIn }}</pre>
+  <!-- <pre>useUI{{ useUI().userLoggedIn }}</pre> -->
   <pre>status:{{ status }}</pre>
-  <pre>Session: {{ userStore }}</pre>
+  <!-- <pre>Session: {{ userStore }}</pre> -->
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
-import { useRouter } from 'vue-router';
 import { useUI } from 'stores/ui';
 import { useUserStore } from 'stores/user';
+import { useRouter } from 'vue-router';
 
 const router = useRouter();
 const ui = useUI();
@@ -47,49 +46,10 @@ const handleLogout = async () => {
     window.location.reload();
   });
 };
-
-// const userLogOut = () => {
-//   FirebaseSignout().then(() => {
-//     router.push('/').then(() => {
-//       window.location.reload();
-//     });
-//   });
-// };
 </script>
 
 <style lang="scss" scoped>
 .index-container {
-  display: flex;
-  width: 100%;
-  height: 500px;
-  background-image: url('../../assets/index/background-01.jpg');
-  background-position: center center;
-  background: cover;
-  background-repeat: no-repeat;
-  position: relative;
-
-  &:before {
-    content: '';
-    background: linear-gradient(to bottom, #ffffff, transparent);
-    height: 300px;
-    width: 100%;
-    display: block;
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-
-  &:after {
-    content: '';
-    background: linear-gradient(to top, #ffffff, transparent);
-    height: 200px;
-    width: 100%;
-    display: block;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
   .quiz-stat-container {
     z-index: 2;
     display: grid;

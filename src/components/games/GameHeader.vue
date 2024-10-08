@@ -35,7 +35,8 @@ const closeDialogConfirm = ref(false);
 }
 
 .close-btn {
-  background: #ebecef;
+  color: #ebecef;
+  border: 1px solid #ebecef;
   margin-left: auto;
 }
 

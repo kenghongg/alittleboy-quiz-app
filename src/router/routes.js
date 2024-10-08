@@ -40,8 +40,9 @@ const routes = [
   {
     path: '/game',
     component: () => import('layouts/MainLayout.vue'),
-    children: [{ path: '', component: () => import('pages/InGamePage.vue') }],
-    meta: { auth: true }
+    children: [{ path: '', component: () => import('pages/GamePage.vue') }],
+    // meta: { auth: true }
+    meta: { auth: false }
   },
   {
     path: '/rank',

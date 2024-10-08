@@ -3,6 +3,7 @@ import { createRouter, createMemoryHistory, createWebHistory, createWebHashHisto
 import routes from './routes';
 import { LocalStorage } from 'quasar';
 import { useQuasar } from 'quasar';
+import { useUserStore } from 'stores/user';
 
 export default route(function (/* { store, ssrContext } */) {
   const createHistory = process.env.SERVER
@@ -23,8 +24,15 @@ export default route(function (/* { store, ssrContext } */) {
 
   Router.beforeEach((to, from, next) => {
     const $q = useQuasar();
+    const userStore = useUserStore();
+    const status = userStore.status;
 
-    if (to.meta.auth && !LocalStorage.has('user')) {
+    if (to.path === '/login' && status === 'LOGGED_IN') {
+      return next('/app');
+    }
+
+    // if (to.meta.auth && !LocalStorage.has('user')) {
+    if (to.meta.auth && status === 'NON_LOGIN') {
       $q.notify({
         type: 'negative',
         message: 'Please login to continue',
@@ -34,7 +42,8 @@ export default route(function (/* { store, ssrContext } */) {
       return next('/login');
     }
 
-    if (!to.meta.auth && LocalStorage.has('user')) {
+    // if (!to.meta.auth && LocalStorage.has('user')) {
+    if (!to.meta.auth && status === 'LOGGED_IN') {
       return next('/app');
     }
 
