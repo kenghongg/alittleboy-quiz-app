@@ -31,8 +31,10 @@
         <div class="question-header">
           <span>Question {{ currentQuestionIndex + 1 }} of {{ quizData.length }}</span>
         </div>
-        <p class="question-text" v-html="question" />
-        <!-- <q-btn @click="voiceRead(question)" color="white" round size="md" class="q-ml-sm">🔊</q-btn> -->
+        <p class="question-text">
+          <q-btn @click="voiceRead(question)" color="white" round size="sm" label="🔊" class="q-mr-sm" />
+          <span v-html="question" />
+        </p>
       </div>
       <div class="answers-container">
         <q-btn
@@ -149,23 +151,34 @@ const shuffledAnswers = computed(() => {
   return [];
 });
 
+const correctSound = new Audio('src/assets/sound/correct.flac');
+const wrongSound = new Audio('src/assets/sound/wrong.mp3');
+
 const checkAnswer = (answer) => {
   if (!showResult.value) {
     selectedAnswer.value = answer;
     showResult.value = true;
     getQuizProgress();
 
-    // voiceRead(answer);
     if (answer === currentQuestion.value.correct_answer) {
       isCorrect.value = true;
       resultMessage.value = 'Correct!';
       score.value.correct++;
       // voiceRead(`Yes! The answer is ${answer}`);
+      // success.flac
+      // voiceRead(answer).then(() => {
+      correctSound.play();
+      // });
     } else {
       isCorrect.value = false;
       resultMessage.value = `Incorrect! The correct answer is ${currentQuestion.value.correct_answer}.`;
       score.value.incorrect++;
       // voiceRead(`No! The answer is not ${answer}`);
+      wrongSound.play();
+      // voiceRead(answer).then(() => {
+      wrongSound.volume = 0.3;
+      wrongSound.play();
+      // });
     }
   }
 };
@@ -243,6 +256,7 @@ const voiceRead = (text) => {
 
   // Fallback to the first available voice if no cheerful / female voice is found
   utterance.voice = kidFriendlyVoice || voices[0];
+  // utterance.pitch = 1.6;
 
   synth.speak(utterance);
 };
