@@ -20,7 +20,8 @@
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
-  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  // background: linear-gradient(135deg, #1e3c72, #2a5298);
+  background: linear-gradient(#3293f4, #5472ec);
 
   /* &:before {
     content: '';

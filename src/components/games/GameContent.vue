@@ -18,66 +18,79 @@
           show-value
         />
       </div>
-      <div class="question-container">
-        <!-- use AI to create related 3d image based on the questions. -->
-        <!-- <div class="question-image">
+
+      <template v-if="!quizComplete">
+        <div class="question-container">
+          <!-- use AI to create related 3d image based on the questions. -->
+          <!-- <div class="question-image">
           <img :src="generatedImageUrl" alt="AI-generated image" />
         </div> -->
 
-        <div style="display: flex; justify-content: center; margin-bottom: 1rem">
-          <img src="src/assets/games/img-science.png" width="100%" style="max-width: 200px" />
+          <div style="display: flex; justify-content: center; margin-bottom: 1rem">
+            <img src="src/assets/games/img-science.png" width="100%" style="max-width: 200px" />
+          </div>
+
+          <div class="question-header">
+            <span>Question {{ currentQuestionIndex + 1 }} of {{ quizData.length }}</span>
+          </div>
+          <p class="question-text">
+            <q-btn @click="voiceRead(question)" round size="sm" label="🔊" class="q-mr-sm" />
+            <span v-html="question" />
+          </p>
         </div>
-
-        <div class="question-header">
-          <span>Question {{ currentQuestionIndex + 1 }} of {{ quizData.length }}</span>
+        <div class="answers-container">
+          <q-btn
+            v-for="(answer, index) in shuffledAnswers"
+            :key="index"
+            @click="checkAnswer(answer)"
+            :class="{
+              selected: selectedAnswer === answer,
+              selectedCorrect: selectedAnswer === quizData[currentQuestionIndex].correct_answer && showResult,
+              selectedWrong: selectedAnswer !== quizData[currentQuestionIndex].correct_answer && showResult,
+              showCorrect:
+                answer === quizData[currentQuestionIndex].correct_answer &&
+                selectedAnswer !== quizData[currentQuestionIndex].correct_answer &&
+                showResult
+            }"
+            class="answer-btn"
+            no-caps
+          >
+            <template v-slot:default>
+              <span v-html="answer"></span>
+            </template>
+          </q-btn>
         </div>
-        <p class="question-text">
-          <q-btn @click="voiceRead(question)" color="white" round size="sm" label="🔊" class="q-mr-sm" />
-          <span v-html="question" />
-        </p>
-      </div>
-      <div class="answers-container">
-        <q-btn
-          v-for="(answer, index) in shuffledAnswers"
-          :key="index"
-          @click="checkAnswer(answer)"
-          :class="{
-            selected: selectedAnswer === answer,
-            selectedCorrect: selectedAnswer === quizData[currentQuestionIndex].correct_answer && showResult,
-            selectedWrong: selectedAnswer !== quizData[currentQuestionIndex].correct_answer && showResult,
-            showCorrect:
-              answer === quizData[currentQuestionIndex].correct_answer &&
-              selectedAnswer !== quizData[currentQuestionIndex].correct_answer &&
-              showResult
-          }"
-          class="answer-btn"
-          no-caps
-        >
-          <template v-slot:default>
-            <span v-html="answer"></span>
-          </template>
-        </q-btn>
-      </div>
+      </template>
 
-      <!-- :disabled="showResult" -->
-      <!-- isCorrect  -->
-
-      <!-- <pre>selectedAnswer--{{ selectedAnswer }}</pre> -->
-      <!-- <pre>-- {{ quizData[currentQuestionIndex].correct_answer }}</pre> -->
-
-      <div v-if="showResult" class="result-container">
-        <!-- <p :class="{ correct: isCorrect, incorrect: !isCorrect }">{{ resultMessage }}</p> -->
+      <div v-if="showResult && !quizComplete" class="result-container">
         <q-btn @click="nextQuestion" class="next-btn" no-caps size="md">
           {{ currentQuestionIndex < quizData.length - 1 ? 'Next Question' : 'See Results' }}
         </q-btn>
       </div>
 
       <div v-if="quizComplete" class="final-score">
-        <div>Quiz Complete!</div>
-        <p>
+        <div class="quiz-result-title">Quiz Completed</div>
+        <div class="quiz-result-chart">
+          <q-knob
+            v-model="correctPercentage"
+            readonly
+            size="100px"
+            thickness="0.2"
+            color="positive"
+            track-color="white"
+            :value-label="`${score.correct} Correct`"
+            show-value
+            class="custom-knob"
+          >
+            {{ correctPercentage }}%
+          </q-knob>
+        </div>
+        <p class="quiz-result-desc">
           You scored {{ score.correct }} correct and {{ score.incorrect }} incorrect out of
           {{ quizData.length }}
         </p>
+
+        <q-btn @click="nextQuestion" class="done-btn" no-caps size="lg">Done</q-btn>
       </div>
     </div>
   </transition>
@@ -107,7 +120,7 @@ const loading = ref(true);
 async function fetchQuizData() {
   try {
     const response = await axios.get(
-      'https://opentdb.com/api.php?amount=10&category=17&difficulty=easy&type=multiple'
+      'https://opentdb.com/api.php?amount=2&category=17&difficulty=easy&type=multiple'
     );
     quizData.value = response.data.results.sort(() => Math.random() - 0.5);
     getQuizProgress();
@@ -119,16 +132,11 @@ async function fetchQuizData() {
 }
 
 const getQuizProgress = () => {
-  // if (currentQuestionIndex.value === 0) {
-  // quizProgress.value = 1;
-  // } else {
   if (showResult.value) {
     quizProgress.value = currentQuestionIndex.value + 1;
   } else {
     quizProgress.value = currentQuestionIndex.value;
   }
-  // }
-
   quizProgressMax.value = quizData.value.length;
   quizProgressMin.value = 0;
 };
@@ -151,6 +159,9 @@ const shuffledAnswers = computed(() => {
   return [];
 });
 
+const correctPercentage = computed(() => (score.value.correct / quizData.value.length) * 100);
+// const incorrectPercentage = computed(() => (score.value.incorrect / quizData.value.length) * 100);
+
 const correctSound = new Audio('src/assets/sound/correct.mp3');
 const wrongSound = new Audio('src/assets/sound/wrong.mp3');
 
@@ -164,39 +175,16 @@ const checkAnswer = (answer) => {
       isCorrect.value = true;
       resultMessage.value = 'Correct!';
       score.value.correct++;
-      // voiceRead(`Yes! The answer is ${answer}`);
-      // success.flac
-      // voiceRead(answer).then(() => {
-      correctSound.play();
+      // correctSound.play();
       // });
     } else {
       isCorrect.value = false;
       resultMessage.value = `Incorrect! The correct answer is ${currentQuestion.value.correct_answer}.`;
       score.value.incorrect++;
-      // voiceRead(`No! The answer is not ${answer}`);
-      wrongSound.play();
-      // voiceRead(answer).then(() => {
-      wrongSound.play();
-      // });
+      // wrongSound.play();
     }
   }
 };
-
-// const nextQuestion = () => {
-//   // loading.value = true;
-//   if (currentQuestionIndex.value < quizData.value.length - 1) {
-//     showResult.value = false; // Start the fade-out before moving to the next question
-//     setTimeout(() => {
-//       currentQuestionIndex.value++;
-//       selectedAnswer.value = null;
-//       resultMessage.value = '';
-//       loading.value = false;
-//     }, 500); // Match the timeout duration with the CSS transition duration
-//   } else {
-//     quizComplete.value = true;
-//     loading.value = false;
-//   }
-// };
 
 const nextQuestion = () => {
   if (currentQuestionIndex.value < quizData.value.length - 1) {
@@ -208,31 +196,6 @@ const nextQuestion = () => {
     quizComplete.value = true;
   }
 };
-
-// const readQuestion = () => {
-//   const synth = window.speechSynthesis;
-//   if (synth.speaking) synth.cancel(); // Stop any ongoing speech
-
-//   const utterance = new SpeechSynthesisUtterance(question.value);
-//   utterance.pitch = 1.2; // Slightly higher pitch for a more cheerful tone
-//   utterance.rate = 1; // Adjust rate (0.1 to 10)
-
-//   // Get all available voices
-//   const voices = synth.getVoices();
-
-//   // Select a cheerful kid-friendly voice
-//   const kidFriendlyVoice = voices.find(
-//     (voice) =>
-//       voice.name.toLowerCase().includes('kid') ||
-//       voice.name.toLowerCase().includes('child') ||
-//       voice.name.toLowerCase().includes('female')
-//   );
-
-//   // Fallback to the first available voice if no cheerful / female voice is found
-//   utterance.voice = kidFriendlyVoice || voices[0];
-
-//   synth.speak(utterance);
-// };
 
 const voiceRead = (text) => {
   const synth = window.speechSynthesis;
@@ -442,9 +405,9 @@ onMounted(() => {
 }
 
 .final-score {
-  margin-top: 30px;
-  color: #e74c3c;
-  font-size: 1.4rem;
+  // margin-top: 30px;
+  // color: #e74c3c;
+  // font-size: 1.4rem;
 }
 
 .voice-btn {
@@ -469,5 +432,53 @@ onMounted(() => {
   position: absolute;
   top: 0;
   left: 0;
+}
+
+.quiz-result-chart {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin: 20px 0;
+  color: #ffffff;
+}
+
+.quiz-result-title {
+  text-align: center;
+  font-size: 2rem;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.quiz-result-desc {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.done-btn {
+  font-size: 1.2rem;
+  background: linear-gradient(#eaa941, #f39c12);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  display: flex;
+  margin: 2rem auto 0;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.custom-knob {
+  /* Apply a linear gradient overlay */
+  --q-color-positive: linear-gradient(135deg, #4caf50, #8bc34a);
+
+  /* Add a subtle shadow for 3D effect */
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.3),
+    inset 0 0 20px rgba(255, 255, 255, 0.4);
+  border-radius: 50%;
+}
+
+.custom-knob .q-knob__arc {
+  /* Override the color of the arc with a gradient */
+  stroke: url(#gradient1); /* Define gradient in SVG */
 }
 </style>
