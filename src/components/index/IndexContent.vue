@@ -1,5 +1,8 @@
 <template>
   <div class="index-container">
+    <div class="index-img">
+      <img src="src/assets/index/main-img.png" />
+    </div>
     <div class="quiz-stat-container">
       <div class="stat-game">
         <div class="stat-icon">
@@ -15,7 +18,7 @@
           <q-icon name="sports_esports" />
         </div>
 
-        <span>0</span>
+        <span>{{ quizAnswerCount }}</span>
         Quiz Answered
       </div>
     </div>
@@ -28,6 +31,7 @@
 </template>
 
 <script setup>
+import { computed, onMounted, ref } from 'vue';
 import { useUI } from 'stores/ui';
 import { useUserStore } from 'stores/user';
 import { useRouter } from 'vue-router';
@@ -39,6 +43,14 @@ const user = userStore.user;
 const status = userStore.status;
 const loading = userStore.loading;
 
+const quizAnswerCount = ref(0);
+const getQuizAnsweredData = () => {
+  const storedQuizCount = JSON.parse(sessionStorage.getItem('quizCount'));
+  if (storedQuizCount) {
+    quizAnswerCount.value = storedQuizCount;
+  }
+};
+
 // logout action.
 const handleLogout = async () => {
   await userStore.supabaseLogout();
@@ -46,10 +58,25 @@ const handleLogout = async () => {
     window.location.reload();
   });
 };
+
+onMounted(() => {
+  getQuizAnsweredData();
+});
 </script>
 
 <style lang="scss" scoped>
 .index-container {
+  .index-img {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+
+    img {
+      display: block;
+      width: 100%;
+      max-width: 240px;
+    }
+  }
   .quiz-stat-container {
     z-index: 2;
     display: grid;
@@ -59,9 +86,8 @@ const handleLogout = async () => {
     margin: auto;
 
     .stat-game {
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(8px);
-      // border: 2px solid rgba(199, 199, 199, 0.5);
       width: 100%;
       padding: 1rem;
       min-height: 160px;
