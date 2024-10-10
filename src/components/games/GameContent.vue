@@ -2,6 +2,7 @@
   <div class="loading-quiz" v-if="loading">
     <q-spinner v-if="loading" color="primary" size="50px" class="q-mb-md" />
   </div>
+
   <transition name="fade-scroll">
     <div class="quiz" v-if="!loading">
       <div class="quiz-knob">
@@ -18,7 +19,6 @@
           show-value
         />
       </div>
-
       <template v-if="!quizComplete">
         <div class="question-container">
           <!-- use AI to create related 3d image based on the questions. -->
@@ -26,9 +26,11 @@
           <img :src="generatedImageUrl" alt="AI-generated image" />
         </div> -->
 
-          <div style="display: flex; justify-content: center; margin-bottom: 1rem">
+          <div class="question-img">
             <img src="src/assets/games/img-science.png" width="100%" style="max-width: 200px" />
           </div>
+
+          <!-- <q-btn @click="startQuiz">start</q-btn> -->
 
           <div class="question-header">
             <span>Question {{ currentQuestionIndex + 1 }} of {{ quizData.length }}</span>
@@ -61,15 +63,13 @@
           </q-btn>
         </div>
       </template>
-
       <div v-if="showResult && !quizComplete" class="result-container">
         <q-btn @click="nextQuestion" class="next-btn" no-caps size="md">
           {{ currentQuestionIndex < quizData.length - 1 ? 'Next Question' : 'See Results' }}
         </q-btn>
       </div>
-
       <div v-if="quizComplete" class="final-score">
-        <div class="quiz-result-title">Quiz Completed</div>
+
         <div class="quiz-result-chart">
           <q-knob
             v-model="correctPercentage"
@@ -85,12 +85,24 @@
             {{ correctPercentage }}%
           </q-knob>
         </div>
+        <div class="quiz-result-title">Quiz Completed</div>
         <p class="quiz-result-desc">
-          You scored {{ score.correct }} correct and {{ score.incorrect }} incorrect out of
-          {{ quizData.length }}
+          <!-- You scored {{ score.correct }} correct and {{ score.incorrect }} incorrect out of -->
+          You scored {{ score.correct }} correct out of {{ quizData.length }} questions
         </p>
-
-        <q-btn @click="nextQuestion" class="done-btn" no-caps size="lg">Done</q-btn>
+        <q-btn class="done-btn" no-caps size="lg" @click="restartQuiz()">Restart</q-btn>
+        <div class="quiz-result-table">
+          <div class="q-py-md">
+            <q-table
+              :rows="quizTableRows"
+              :columns="quizTableCols"
+              row-key="name"
+              flat
+              bordered
+              virtual-scroll
+            />
+          </div>
+        </div>
       </div>
     </div>
   </transition>
@@ -101,8 +113,8 @@
 </template>
 
 <script setup>
-import { ref, computed, onMounted, watch } from 'vue';
 import axios from 'axios';
+import { computed, onMounted, ref } from 'vue';
 
 const quizData = ref([]);
 const currentQuestionIndex = ref(0);
@@ -115,12 +127,15 @@ const quizComplete = ref(false);
 const quizProgress = ref(0);
 const quizProgressMin = ref(1);
 const quizProgressMax = ref(100);
+const quizTableRows = ref([]);
+const quizTableCols = ref([]);
 const loading = ref(true);
 
 async function fetchQuizData() {
+  loading.value = true;
   try {
     const response = await axios.get(
-      'https://opentdb.com/api.php?amount=2&category=17&difficulty=easy&type=multiple'
+      'https://opentdb.com/api.php?amount=10&category=17&difficulty=easy&type=multiple'
     );
     quizData.value = response.data.results.sort(() => Math.random() - 0.5);
     getQuizProgress();
@@ -142,11 +157,10 @@ const getQuizProgress = () => {
 };
 
 const quizCategory = computed(() => {
-  // Check if quizData has items and if the currentQuestionIndex is valid
   if (quizData.value.length > 0 && currentQuestionIndex.value < quizData.value.length) {
-    return quizData.value[currentQuestionIndex.value].category || ''; // Return category or empty string
+    return quizData.value[currentQuestionIndex.value].category || '';
   }
-  return ''; // Return empty string if conditions are not met
+  return '';
 });
 
 const currentQuestion = computed(() => quizData.value[currentQuestionIndex.value]);
@@ -171,30 +185,109 @@ const checkAnswer = (answer) => {
     showResult.value = true;
     getQuizProgress();
 
+    startQuiz();
+
     if (answer === currentQuestion.value.correct_answer) {
       isCorrect.value = true;
       resultMessage.value = 'Correct!';
       score.value.correct++;
       // correctSound.play();
-      // });
     } else {
       isCorrect.value = false;
       resultMessage.value = `Incorrect! The correct answer is ${currentQuestion.value.correct_answer}.`;
       score.value.incorrect++;
       // wrongSound.play();
     }
+
+    // Retrieve the existing quiz result from sessionStorage
+    const storedQuizResult = JSON.parse(sessionStorage.getItem('quizResult')) || { answers: [] };
+
+    // Add the current answer with timestamp to the answers array
+    const answerData = {
+      difficulty: currentQuestion.value.difficulty,
+      quizCategory: currentQuestion.value.category,
+      quizQuestion: currentQuestion.value.question,
+      correctAnswer: currentQuestion.value.correct_answer,
+      answer: answer,
+      isCorrect: isCorrect.value,
+      time: new Date().toISOString()
+    };
+
+    storedQuizResult.answers.push(answerData);
+
+    let storedQuizCount = JSON.parse(sessionStorage.getItem('quizCount')) || 0;
+
+    storedQuizCount += 1;
+
+    // Update the score and save the updated quiz result back to sessionStorage
+    storedQuizResult.score = score.value;
+    sessionStorage.setItem('quizResult', JSON.stringify(storedQuizResult));
+    sessionStorage.setItem('quizCount', JSON.stringify(storedQuizCount));
+    console.log(storedQuizResult);
   }
 };
 
+// Define these at the top of your script or inside your setup function
+let quizStartTime;
+let quizEndTime;
+
+// Call this function when the quiz starts
+const startQuiz = () => {
+  // Check if the quiz result already exists in sessionStorage
+  const storedQuizResult = JSON.parse(sessionStorage.getItem('quizResult'));
+
+  // If the stored quiz result is null or does not have a start time, initialize it
+  if (!storedQuizResult || !storedQuizResult.startTime) {
+    quizStartTime = new Date().toISOString();
+
+    // Initialize or reset quiz result in sessionStorage
+    const initialQuizResult = {
+      startTime: quizStartTime,
+      endTime: null,
+      score: { correct: 0, incorrect: 0 },
+      answers: []
+    };
+
+    sessionStorage.setItem('quizResult', JSON.stringify(initialQuizResult));
+  }
+};
+
+// Call this function at the end of the quiz
+const endQuiz = () => {
+  quizEndTime = new Date().toISOString();
+
+  // Retrieve the existing quiz result from sessionStorage
+  const storedQuizResult = JSON.parse(sessionStorage.getItem('quizResult'));
+
+  // Update the end time
+  storedQuizResult.endTime = quizEndTime;
+
+  // Save the updated quiz result back to sessionStorage
+  sessionStorage.setItem('quizResult', JSON.stringify(storedQuizResult));
+};
+
+// const nextQuestion = () => {
+//   if (currentQuestionIndex.value < quizData.value.length - 1) {
+//     currentQuestionIndex.value++;
+//     showResult.value = false;
+//     selectedAnswer.value = null;
+//     resultMessage.value = '';
+//   } else {
+//     quizComplete.value = true;
+//   }
+// };
+
+// Store current question index in session storage
 const nextQuestion = () => {
   if (currentQuestionIndex.value < quizData.value.length - 1) {
     currentQuestionIndex.value++;
     showResult.value = false;
     selectedAnswer.value = null;
-    resultMessage.value = '';
   } else {
     quizComplete.value = true;
+    endQuiz();
   }
+  getQuizResults();
 };
 
 const voiceRead = (text) => {
@@ -223,23 +316,119 @@ const voiceRead = (text) => {
   synth.speak(utterance);
 };
 
+const restartQuiz = () => {
+  // Logic to reset the quiz state
+  currentQuestionIndex.value = 0;
+  selectedAnswer.value = null;
+  showResult.value = false;
+  score.value = { correct: 0, incorrect: 0 };
+  quizComplete.value = false;
+
+  sessionStorage.removeItem('quizResult'); // remove session storage
+  fetchQuizData(); // Fetch new quiz data
+};
+
+const decodeHtml = (html) => {
+  const txt = document.createElement('textarea');
+  txt.innerHTML = html;
+  return txt.value;
+};
+
+const formatTime = (isoString) => {
+  const date = new Date(isoString);
+  return date.toLocaleString(); // Adjust options if needed for formatting
+};
+
+// Function to retrieve quiz results from sessionStorage
+const getQuizResults = () => {
+  const storedQuizResult = JSON.parse(sessionStorage.getItem('quizResult'));
+
+  if (storedQuizResult) {
+    // Prepare the data for the table
+    const answers = storedQuizResult.answers.map((answer, index) => ({
+      name: `Q${index + 1}`,
+      difficulty: answer.difficulty,
+      quizCategory: decodeHtml(answer.quizCategory),
+      quizQuestion: decodeHtml(answer.quizQuestion),
+      correctAnswer: decodeHtml(answer.correctAnswer),
+      selectedAnswer: decodeHtml(answer.answer),
+      isCorrect: answer.isCorrect ? 'Yes' : 'No',
+      time: answer.time
+    }));
+
+    quizTableRows.value = answers; // Assign the prepared data to rows
+  }
+
+  quizTableCols.value = [
+    {
+      name: 'name',
+      required: true,
+      label: 'Quiz #',
+      align: 'left',
+      field: (row) => row.name,
+      // format: (val) => `${val}`,
+      sortable: true
+    },
+    {
+      name: 'difficulty',
+      label: 'Difficult',
+      align: 'center',
+      field: (row) => row.difficulty,
+      sortable: true
+    },
+    {
+      name: 'quizCategory',
+      label: 'Category',
+      align: 'center',
+      field: (row) => row.quizCategory,
+      sortable: true
+    },
+    {
+      name: 'quizQuestion',
+      label: 'Question',
+      align: 'left',
+      field: (row) => row.quizQuestion,
+      sortable: true
+    },
+    {
+      name: 'correctAnswer',
+      label: 'Correct Answer',
+      align: 'left',
+      field: (row) => row.correctAnswer,
+      sortable: true
+    },
+    {
+      name: 'selectedAnswer',
+      label: 'Selected Answer',
+      align: 'left',
+      field: (row) => row.selectedAnswer,
+      sortable: true
+    },
+    {
+      name: 'isCorrect',
+      label: 'Correct',
+      align: 'center',
+      field: (row) => row.isCorrect,
+      sortable: true
+    },
+    {
+      name: 'time',
+      label: 'Answer Time',
+      align: 'center',
+      field: (row) => formatTime(row.time),
+      sortable: true
+    }
+    // isCorrect
+    // time
+  ];
+};
+
 onMounted(() => {
   fetchQuizData();
 });
 </script>
 
 <style lang="scss" scoped>
-// .quiz {
-//   max-width: 600px;
-//   margin: auto;
-//   text-align: center;
-//   font-family: Arial, sans-serif;
-//   background: #f9f9f9;
-//   padding: 20px;
-//   border-radius: 15px;
-//   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-// }
-
 .fade-scroll-enter-active,
 .fade-scroll-leave-active {
   // transition: opacity 0.5s ease, transform 0.5s ease;
@@ -252,6 +441,7 @@ onMounted(() => {
 }
 
 .quiz {
+  width: 100%;
   // max-width: 600px;
   // margin: auto;
   // text-align: center;
@@ -268,6 +458,16 @@ onMounted(() => {
     font-size: 1rem;
     font-weight: bold;
     margin-bottom: 12px;
+  }
+  .question-img {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+    img {
+      height: 100%;
+      width: auto;
+      max-height: 20dvh;
+    }
   }
   .question-header {
     font-size: 1rem;
@@ -408,6 +608,8 @@ onMounted(() => {
   // margin-top: 30px;
   // color: #e74c3c;
   // font-size: 1.4rem;
+  // width: 100%;
+  // position: relative;
 }
 
 .voice-btn {
@@ -447,11 +649,13 @@ onMounted(() => {
   font-size: 2rem;
   color: #ffffff;
   font-weight: bold;
+  // padding-top: 1rem;
 }
 
 .quiz-result-desc {
   font-size: 1rem;
   color: #ffffff;
+  text-align: center;
 }
 
 .done-btn {
@@ -477,8 +681,10 @@ onMounted(() => {
   border-radius: 50%;
 }
 
-.custom-knob .q-knob__arc {
-  /* Override the color of the arc with a gradient */
-  stroke: url(#gradient1); /* Define gradient in SVG */
+.quiz-result-table {
+  // width: 100%; /* Ensure the container takes the full width */
+  // overflow-x: auto; /* Enable horizontal scrolling */
+  // position: relative;
+  // max-width: fit-content;
 }
 </style>
